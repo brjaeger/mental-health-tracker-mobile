@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mental_health_tracker/screens/list_moodentry.dart';
 import 'package:mental_health_tracker/screens/menu.dart';
 import 'package:mental_health_tracker/screens/moodentry_form.dart';
-// TODO: Impor halaman MoodEntryFormPage jika sudah dibuat
+import 'package:mental_health_tracker/screens/list_moodentry.dart';
 
 class LeftDrawer extends StatelessWidget {
   const LeftDrawer({super.key});
@@ -28,21 +27,20 @@ class LeftDrawer extends StatelessWidget {
                   ),
                 ),
                 Padding(padding: EdgeInsets.all(8)),
-                Text("Ayo jaga kesehatan mentalmu setiap hari disini!",
-                    // TODO: Tambahkan gaya teks dengan center alignment, font ukuran 15, warna putih, dan weight biasa
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 25,
-                      fontWeight: FontWeight.normal,
-                      color: Colors.white,
-                    )),
+                Text(
+                  "Ayo jaga kesehatan mentalmu setiap hari disini!",
+                  style: TextStyle(
+                    fontSize: 15,
+                    color: Colors.white,
+                  ),
+                  // TODO: Tambahkan gaya teks dengan center alignment, font ukuran 15, warna putih, dan weight biasa
+                ),
               ],
             ),
           ),
           ListTile(
             leading: const Icon(Icons.home_outlined),
             title: const Text('Halaman Utama'),
-            // Bagian redirection ke MyHomePage
             onTap: () {
               Navigator.pushReplacement(
                   context,
@@ -52,14 +50,26 @@ class LeftDrawer extends StatelessWidget {
             },
           ),
           ListTile(
+            leading: const Icon(Icons.mood),
+            title: const Text('Tambah Mood'),
+            // Bagian redirection ke MoodEntryFormPage
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MoodEntryFormPage(),
+                  ));
+            },
+          ),
+          ListTile(
             leading: const Icon(Icons.add_reaction_rounded),
             title: const Text('Daftar Mood'),
             onTap: () {
-              // Route menu ke halaman mood
               Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const MoodEntryPage()),
-              );
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MoodEntryPage(),
+                  ));
             },
           ),
         ],

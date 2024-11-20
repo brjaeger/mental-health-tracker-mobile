@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:mental_health_tracker/screens/menu.dart';
 import 'package:mental_health_tracker/widgets/left_drawer.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
-import 'package:provider/provider.dart'; // TODO: Impor drawer yang sudah dibuat sebelumnya
+import 'package:provider/provider.dart';
+// TODO: Impor drawer yang sudah dibuat sebelumnya
 
 class MoodEntryFormPage extends StatefulWidget {
   const MoodEntryFormPage({super.key});
@@ -14,16 +15,19 @@ class MoodEntryFormPage extends StatefulWidget {
 }
 
 class _MoodEntryFormPageState extends State<MoodEntryFormPage> {
-  final _formKey = GlobalKey<FormState>();
-  final String _mood = "";
+  String _mood = "";
   String _feelings = "";
   int _moodIntensity = 0;
+
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
+
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: true,
         title: const Center(
           child: Text(
             'Form Tambah Mood Kamu Hari ini',
@@ -32,8 +36,7 @@ class _MoodEntryFormPageState extends State<MoodEntryFormPage> {
         backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Colors.white,
       ),
-      drawer:
-          const LeftDrawer(), // TODO: Tambahkan drawer yang sudah dibuat di sini
+      drawer: const LeftDrawer(),
       body: Form(
         key: _formKey,
         child: SingleChildScrollView(
@@ -44,8 +47,31 @@ class _MoodEntryFormPageState extends State<MoodEntryFormPage> {
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
                   decoration: InputDecoration(
-                    hintText: "Feelings",
-                    labelText: "Feelings",
+                    hintText: 'Mood',
+                    labelText: 'Mood',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                  ),
+                  onChanged: (String? value) {
+                    setState(() {
+                      _mood = value!;
+                    });
+                  },
+                  validator: (String? value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Mood tidak boleh kosong';
+                    }
+                    return null;
+                  },
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextFormField(
+                  decoration: InputDecoration(
+                    hintText: 'Feelings',
+                    labelText: 'Feelings',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5.0),
                     ),
@@ -57,7 +83,7 @@ class _MoodEntryFormPageState extends State<MoodEntryFormPage> {
                   },
                   validator: (String? value) {
                     if (value == null || value.isEmpty) {
-                      return "Feelings tidak boleh kosong!";
+                      return 'Feelings tidak boleh kosong';
                     }
                     return null;
                   },
@@ -67,23 +93,23 @@ class _MoodEntryFormPageState extends State<MoodEntryFormPage> {
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
                   decoration: InputDecoration(
-                    hintText: "Mood intensity",
-                    labelText: "Mood intensity",
+                    hintText: 'Mood Intensity',
+                    labelText: 'Mood Intensity',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5.0),
                     ),
                   ),
                   onChanged: (String? value) {
                     setState(() {
-                      _moodIntensity = int.tryParse(value!) ?? 0;
+                      _moodIntensity = int.parse(value!);
                     });
                   },
                   validator: (String? value) {
                     if (value == null || value.isEmpty) {
-                      return "Mood intensity tidak boleh kosong!";
+                      return 'Mood Intensity tidak boleh kosong';
                     }
                     if (int.tryParse(value) == null) {
-                      return "Mood intensity harus berupa angka!";
+                      return 'Mood Intensity harus berupa angka';
                     }
                     return null;
                   },
@@ -95,22 +121,19 @@ class _MoodEntryFormPageState extends State<MoodEntryFormPage> {
                   padding: const EdgeInsets.all(8.0),
                   child: ElevatedButton(
                     style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(
-                          Theme.of(context).colorScheme.primary),
+                      backgroundColor: WidgetStateProperty.all<Color>(
+                        Theme.of(context).colorScheme.primary,
+                      ),
                     ),
                     onPressed: () async {
                       if (_formKey.currentState!.validate()) {
-                        // Kirim ke Django dan tunggu respons
-                        // TODO: Ganti URL dan jangan lupa tambahkan trailing slash (/) di akhir URL!
                         final response = await request.postJson(
-                          "http://127.0.0.1:8000//create-flutter/",
-                          jsonEncode(<String, String>{
-                            'mood': _mood,
-                            'mood_intensity': _moodIntensity.toString(),
-                            'feelings': _feelings,
-                            // TODO: Sesuaikan field data sesuai dengan aplikasimu
-                          }),
-                        );
+                            "http://127.0.0.1:8000/create-flutter/",
+                            jsonEncode(<String, String>{
+                              'mood': _mood,
+                              'mood_intensity': _moodIntensity.toString(),
+                              'feelings': _feelings,
+                            }));
                         if (context.mounted) {
                           if (response['status'] == 'success') {
                             ScaffoldMessenger.of(context)
@@ -133,7 +156,7 @@ class _MoodEntryFormPageState extends State<MoodEntryFormPage> {
                       }
                     },
                     child: const Text(
-                      "Save",
+                      'Submit',
                       style: TextStyle(color: Colors.white),
                     ),
                   ),
